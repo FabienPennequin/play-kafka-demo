@@ -8,6 +8,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 scalaVersion := "2.11.8"
 
 libraryDependencies += filters
+libraryDependencies += "com.typesafe.akka" %% "akka-stream-kafka" % "0.14"
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test
 
 // Adds additional packages into Twirl
