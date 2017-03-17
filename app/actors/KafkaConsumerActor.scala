@@ -14,7 +14,9 @@ import org.apache.kafka.common.serialization._
 
 import KafkaConsumerActor._
 
-class KafkaConsumerActor @Inject()(implicit materializer: Materializer) extends Actor with ActorLogging {
+class KafkaConsumerActor @Inject()(
+  config: KafkaConsumerConfiguration
+)(implicit materializer: Materializer) extends Actor with ActorLogging {
 
   type KafkaMessage = ConsumerRecord[Array[Byte], String]
 
@@ -38,7 +40,8 @@ class KafkaConsumerActor @Inject()(implicit materializer: Materializer) extends 
 
   private def consumerSettings() = {
     ConsumerSettings(context.system, new ByteArrayDeserializer, new StringDeserializer)
-      .withBootstrapServers("localhost:9092")
+      .withBootstrapServers(config.server)
+      .withClientId(config.clientId.getOrElse("play-demo-kafka"))
       .withGroupId(java.util.UUID.randomUUID().toString)
   }
 
