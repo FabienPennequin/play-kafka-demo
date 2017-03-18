@@ -6,5 +6,8 @@
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
 
+GET     /subscribe/:topic           controllers.HomeController.subscribe(topic: String)
+GET     /unsubscribe/:topic         controllers.HomeController.unsubscribe(topic: String)
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

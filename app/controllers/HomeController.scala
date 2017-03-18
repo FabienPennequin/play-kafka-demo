@@ -5,6 +5,7 @@ import play.api._
 import play.api.mvc._
 
 import akka.actor.ActorRef
+import actors.KafkaConsumerActor._
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -15,6 +16,16 @@ class HomeController @Inject() (
   @Named(actors.Names.KafkaConsumer) kafkaConsumerActor: ActorRef
 ) extends Controller {
 
+  def subscribe(topic: String) = Action {
+    kafkaConsumerActor ! Subscribe(topic)
+    Ok
+  }
+
+  def unsubscribe(topic: String) = Action {
+    kafkaConsumerActor ! Unsubscribe(topic)
+    Ok
+  }
+
   /**
    * Create an Action to render an HTML page.
    *
@@ -23,7 +34,7 @@ class HomeController @Inject() (
    * a path of `/`.
    */
   def index = Action { implicit request =>
-    kafkaConsumerActor ! actors.KafkaConsumerActor.Start
+    kafkaConsumerActor ! Subscribe("topic1")
     Ok(views.html.index())
   }
 }
