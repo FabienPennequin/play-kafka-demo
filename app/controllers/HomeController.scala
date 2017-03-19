@@ -4,8 +4,7 @@ import javax.inject._
 import play.api._
 import play.api.mvc._
 
-import akka.actor.ActorRef
-import actors.KafkaConsumerActor._
+import services.Kafka
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -13,16 +12,16 @@ import actors.KafkaConsumerActor._
  */
 @Singleton
 class HomeController @Inject() (
-  @Named(actors.Names.KafkaConsumer) kafkaConsumerActor: ActorRef
+  kafkaService : Kafka
 ) extends Controller {
 
   def subscribe(topic: String) = Action {
-    kafkaConsumerActor ! Subscribe(topic)
+    kafkaService.subscribe(topic)
     Ok
   }
 
   def unsubscribe(topic: String) = Action {
-    kafkaConsumerActor ! Unsubscribe(topic)
+    kafkaService.unsubscribe(topic)
     Ok
   }
 
@@ -34,7 +33,7 @@ class HomeController @Inject() (
    * a path of `/`.
    */
   def index = Action { implicit request =>
-    kafkaConsumerActor ! Subscribe("topic1")
+    kafkaService.subscribe("topic1")
     Ok(views.html.index())
   }
 }
