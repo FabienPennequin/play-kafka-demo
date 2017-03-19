@@ -5,6 +5,7 @@ import play.api._
 import play.api.mvc._
 
 import services.Kafka
+import scala.concurrent.ExecutionContext
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -13,7 +14,7 @@ import services.Kafka
 @Singleton
 class HomeController @Inject() (
   kafkaService : Kafka
-) extends Controller {
+)(implicit ec: ExecutionContext) extends Controller {
 
   def subscribe(topic: String) = Action {
     kafkaService.subscribe(topic)
@@ -23,6 +24,12 @@ class HomeController @Inject() (
   def unsubscribe(topic: String) = Action {
     kafkaService.unsubscribe(topic)
     Ok
+  }
+
+  def send(topic: String) = Action.async(parse.text) { implicit request =>
+    kafkaService.sendMessage(topic, request.body).map {
+      case _ => Ok
+    }
   }
 
   /**
