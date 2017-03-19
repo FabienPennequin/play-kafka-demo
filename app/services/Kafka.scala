@@ -17,6 +17,7 @@ import actors.KafkaConsumerActor._
 @Singleton
 class Kafka @Inject()(
   system: ActorSystem,
+  config: KafkaConfiguration,
   @Named(actors.Names.KafkaConsumer) consumerActor: ActorRef
 )(implicit materializer: Materializer) {
 
@@ -30,7 +31,7 @@ class Kafka @Inject()(
 
   def sendMessage(topic: String, message: String) = {
     val producerSettings = ProducerSettings(system, new ByteArraySerializer, new StringSerializer)
-      .withBootstrapServers("localhost:9092")
+      .withBootstrapServers(config.producerServer)
 
     Source.single(message)
       .map { elem =>

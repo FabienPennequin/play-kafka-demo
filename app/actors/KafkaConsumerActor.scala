@@ -16,7 +16,7 @@ import scala.collection.mutable.Set
 import KafkaConsumerActor._
 
 class KafkaConsumerActor @Inject()(
-  config: KafkaConsumerConfiguration
+  config: services.KafkaConfiguration
 )(implicit materializer: Materializer) extends Actor with ActorLogging {
 
   // mutable vars... yes... but inside an actor
@@ -69,8 +69,8 @@ class KafkaConsumerActor @Inject()(
 
   private def consumerSettings() = {
     ConsumerSettings(context.system, new ByteArrayDeserializer, new StringDeserializer)
-      .withBootstrapServers(config.server)
-      // .withClientId(config.clientId.getOrElse("play-demo-kafka"))
+      .withBootstrapServers(config.consumerServer)
+      // .withClientId(config.consumerClientId.getOrElse("play-demo-kafka"))
       .withGroupId(java.util.UUID.randomUUID().toString)
   }
 
